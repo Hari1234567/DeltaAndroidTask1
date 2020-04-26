@@ -4,28 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.VibrationEffect;
-import android.provider.ContactsContract;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Vibrator;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.IntRange;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -40,11 +33,12 @@ public class GameMode extends AppCompatActivity {
      OptionsPane optionsPane;
      View view;
      public TextView highScore;
-     TextView currentScore;
+     TextView currentScore,descText;
      ProgressBar timerBar;
      CountDownTimer countDownTimer;
      Vibrator vibrator;
      CountDownTimer scoreBoardTimer;
+     TextView timerText;
      public static final String SHARED_PREFS="sharedPrefs";
      public static final String highScoreString="HIGH SCORE";
      public static final String highScoreStringHack="HIGH SCORE HACK";
@@ -59,6 +53,8 @@ public class GameMode extends AppCompatActivity {
                     timerBar.setProgress((int)millisUntilFinished);
                     rotationSaver.setTimeRemaining((int)millisUntilFinished);
                     //timerBar.getProgressDrawable().setColorFilter(gbr(255-(int)millisUntilFinished*255/10000,(int)(millisUntilFinished)*255/10000,0), android.graphics.PorterDuff.Mode.SRC_IN);
+
+                    timerText.setText(Integer.toString((int)millisUntilFinished/1000));
 
                 }
 
@@ -105,13 +101,18 @@ public class GameMode extends AppCompatActivity {
         rotationSaver= new ViewModelProvider(GameMode.this).get(RotationSaver.class);
         setContentView(R.layout.activity_normal_mode);
         super.onCreate(savedInstanceState);
+        timerText=(TextView)findViewById(R.id.timerNumeric);
         timerBar=(ProgressBar)findViewById(R.id.timerBar);
         highScore=(TextView)findViewById(R.id.highScore);
         currentScore=(TextView)findViewById(R.id.currentScore);
         currentScore.setText(rotationSaver.getScoreText()+Integer.toString(rotationSaver.getScore()));
         highScore.setText(rotationSaver.getHighScoreText()+Integer.toString(getHighScore()));
         highScore.setTextColor(rotationSaver.getFontColor());
+        timerText.setText(Integer.toString(rotationSaver.getTimeRemaining()/1000));
+        timerText.setTextColor(rotationSaver.getFontColor());
         currentScore.setTextColor(rotationSaver.getFontColor());
+        descText=(TextView)findViewById(R.id.descriptText);
+        descText.setTextColor(rotationSaver.getFontColor());
         //getResources().getColor(R.color.colorAccent)="#000000";
         if(MainActivity.mode==1){
                   highScore.setVisibility(View.INVISIBLE);
@@ -119,6 +120,7 @@ public class GameMode extends AppCompatActivity {
         }
         if(MainActivity.mode!=3){
             timerBar.setVisibility(View.INVISIBLE);
+            timerText.setVisibility(View.INVISIBLE);
         }
 
         userInputField = (TextView) findViewById(R.id.userNumber);
@@ -135,11 +137,13 @@ public class GameMode extends AppCompatActivity {
         findViewById(R.id.optionPlaceHolder).setVisibility(View.INVISIBLE);
         fragmentTransaction.replace(R.id.optionPlaceHolder, optionsPane, "LaunchOption").commit();
 
-        proceedBut.setText(rotationSaver.getProceedButText());
+       //proceedBut.setText(rotationSaver.getProceedButText());
+        descText.setText(rotationSaver.getProceedButText());
         if(rotationSaver.getOptionMode()) {
             findViewById(R.id.optionPlaceHolder).setVisibility(View.VISIBLE);
             but.setVisibility(View.INVISIBLE);
-            proceedBut.setClickable(false);
+           // proceedBut.setClickable(false);
+            //proceedBut.setVisibility(View.INVISIBLE);
             rotationSaver.setOptionsClickable(true);
         }
 
@@ -153,19 +157,23 @@ public class GameMode extends AppCompatActivity {
                 optionsPane.reset();
                 findViewById(R.id.optionPlaceHolder).setBackgroundColor(Color.WHITE);
                 rotationSaver.setBackgroundColor(Color.WHITE);
-
+                timerText.setText("10");
+                timerBar.setProgress(10000);
                 findViewById(R.id.optionPlaceHolder).setVisibility(View.INVISIBLE);
                 rotationSaver.setOptionMode(false);
                 userInputField.setEnabled(true);
-                proceedBut.setText(R.string.enter_a_number_to_proceed);
-                rotationSaver.setProceedButText("Enter a number to proceed");
+                //proceedBut.setText(R.string.enter_a_number_to_proceed);
+                descText.setText(R.string.enter_a_number_to_proceed);
+                rotationSaver.setProceedButText("ENTER A NUMBER TO PROCEED");
                 proceedBut.setClickable(false);
+                proceedBut.setVisibility(View.INVISIBLE);
                 rotationSaver.setOptionsClickable(false);
 
             }
         });
-        proceedBut.setClickable((!rotationSaver.getOptionsClickable())||(!rotationSaver.getScoreCountDown()));
-
+        proceedBut.setClickable(rotationSaver.getBackgroundColor()==getResources().getColor(R.color.darkGreen)||rotationSaver.getBackgroundColor()==getResources().getColor(R.color.darkRed));
+        if(proceedBut.isClickable())proceedBut.setVisibility(View.VISIBLE);
+        else proceedBut.setVisibility(View.INVISIBLE);
 
             but.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -203,15 +211,18 @@ public class GameMode extends AppCompatActivity {
                         rotationSaver.setOption(3,optionsPane.getOptions(2));
 
                         but.setVisibility(View.INVISIBLE);
-                        proceedBut.setText(R.string.FactorFindPromt);
+                       // proceedBut.setText(R.string.FactorFindPromt);
+                        descText.setText(R.string.FactorFindPromt);
                         if(MainActivity.mode==3) {
                             rotationSaver.setTimerMode(true);
-                            rotationSaver.setTimeRemaining( 10000);
+                            //rotationSaver.setTimeRemaining( 10000);
                             countDownTimer = new CountDownTimer(10000, 1) {
                                 @Override
                                 public void onTick(long millisUntilFinished) {
                                     timerBar.setProgress((int) millisUntilFinished);
                                     rotationSaver.setTimeRemaining ((int) millisUntilFinished);
+                                    timerText.setText(Integer.toString((int)millisUntilFinished/1000));
+
                                     //timerBar.getProgressDrawable().setColorFilter(gbr(255-(int)millisUntilFinished*255/10000,(int)(millisUntilFinished)*255/10000,0), android.graphics.PorterDuff.Mode.SRC_IN);
                                 }
 
@@ -263,6 +274,8 @@ public class GameMode extends AppCompatActivity {
         if(color==getResources().getColor(R.color.darkGreen)||color==getResources().getColor(R.color.darkRed)){
             rotationSaver.setFontColor(Color.YELLOW);
             userInputField.setTextColor(Color.YELLOW);
+            timerText.setTextColor(Color.YELLOW);
+            descText.setTextColor(Color.YELLOW);
             if(MainActivity.mode!=1) {
                 highScore.setTextColor(Color.YELLOW);
                 currentScore.setTextColor(Color.YELLOW);
@@ -270,6 +283,8 @@ public class GameMode extends AppCompatActivity {
         }else{
             rotationSaver.setFontColor(Color.BLACK);
             userInputField.setTextColor(Color.BLACK);
+            timerText.setTextColor(Color.BLACK);
+            descText.setTextColor(Color.BLACK);
             if(MainActivity.mode!=1)
                 highScore.setTextColor(Color.BLACK);
                 currentScore.setTextColor(Color.BLACK);
@@ -282,6 +297,7 @@ public class GameMode extends AppCompatActivity {
         editor.putInt(highScoreString,score);
         else if(MainActivity.mode==3){
             editor.putInt(highScoreStringHack,score);
+
         }
         editor.commit();
     }
@@ -306,8 +322,8 @@ public class GameMode extends AppCompatActivity {
     }
     public void stopCountdown(){
         countDownTimer.cancel();
-        rotationSaver.setTimeRemaining(10000);
-        timerBar.setProgress(0);
+        //rotationSaver.setTimeRemaining(10000);
+        //timerBar.setProgress(0);
         rotationSaver.setTimerMode(false);
     }
     public void vibrate(){

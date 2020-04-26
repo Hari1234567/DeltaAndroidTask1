@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 public class RotationSaver extends ViewModel {
     private boolean optionMode=false, optionsClickable =true;
     private int option1=0,option2=0,option3=0,correctOptionID=0;
-    private String proceedButText="Enter a number to proceed";
+    private String proceedButText="ENTER A NUMBER TO PROCEED";
     private int backgroundColor=Color.WHITE;
     private int fontColor=Color.BLACK;
     private int score=0;

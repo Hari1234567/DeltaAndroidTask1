@@ -52,6 +52,7 @@ public class OptionsPane extends Fragment {
     ProgressBar progressBar;
     GameMode gameActivty;
     Button proceedBut;
+    TextView descText;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,8 +73,11 @@ public class OptionsPane extends Fragment {
         }
         correctOption=gameActivty.rotationSaver.getCorrectOptionID();
         proceedBut=(Button)getActivity().findViewById(R.id.proceedButton);
-         scoreText=(TextView)getActivity().findViewById(R.id.currentScore);
-        proceedBut.setClickable(!gameActivty.rotationSaver.getOptionsClickable());
+        descText=(TextView)getActivity().findViewById(R.id.descriptText);
+        scoreText=(TextView)getActivity().findViewById(R.id.currentScore);
+        //proceedBut.setClickable(!gameActivty.rotationSaver.getOptionsClickable());
+        //if(proceedBut.isClickable())proceedBut.setVisibility(View.VISIBLE);
+        //else proceedBut.setVisibility(View.INVISIBLE);
             buttons.get(0).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -82,8 +86,9 @@ public class OptionsPane extends Fragment {
                     gameActivty.setBackground(getResources().getColor(R.color.darkGreen));
                         buttons.get(correctOption).setBackgroundColor(Color.GREEN);
                     gameActivty.rotationSaver.setOptionColors(correctOption,Color.GREEN);
-                            proceedBut.setText(R.string.CorrectAnswerFeedback);
-                            gameActivty.rotationSaver.setProceedButText("CORRECT! Press to continue");
+                           // proceedBut.setText(R.string.CorrectAnswerFeedback);
+                            descText.setText(R.string.CorrectAnswerFeedback);
+                            gameActivty.rotationSaver.setProceedButText("CORRECT! Press Next to continue");
                             gameActivty.rotationSaver.setScore(gameActivty.rotationSaver.getScore()+1);
                           scoreText.setText(gameActivty.rotationSaver.getScoreText()+Integer.toString(gameActivty.rotationSaver.getScore()));
                         if(correctOption!=0){
@@ -97,13 +102,16 @@ public class OptionsPane extends Fragment {
                             gameActivty.rotationSaver.setOptionColors(0,Color.RED);
                             gameActivty.scoreBoard();
                             proceedBut.setClickable(false);
+                            proceedBut.setVisibility(View.INVISIBLE);
 
 
                             if(MainActivity.mode!=3) {
-                                proceedBut.setText(R.string.wrongAnswerFeedback);
+                                //proceedBut.setText(R.string.wrongAnswerFeedback);
+                                descText.setText(R.string.wrongAnswerFeedback);
                                 gameActivty.rotationSaver.setProceedButText("INCORRECT, KEEP TRYING!");
                             }else{
-                                proceedBut.setText("INCORRECT, Loading Scoreboard");
+                                //proceedBut.setText("INCORRECT, Loading Scoreboard");
+                                descText.setText("INCORRECT, Loading ScoreBoard");
                                 gameActivty.rotationSaver.setProceedButText("INCORRECT, Loading Scoreboard");
                             }
 
@@ -126,8 +134,10 @@ public class OptionsPane extends Fragment {
 
                      }
                      gameActivty.rotationSaver.setOptionsClickable(false);
-                    if(MainActivity.mode!=3 || gameActivty.rotationSaver.getBackgroundColor()==getResources().getColor(R.color.darkGreen))
-                     proceedBut.setClickable(true);
+                    if(MainActivity.mode!=3 || gameActivty.rotationSaver.getBackgroundColor()==getResources().getColor(R.color.darkGreen)) {
+                        proceedBut.setClickable(true);
+                        proceedBut.setVisibility(View.VISIBLE);
+                    }
                     if(MainActivity.mode==3) {
                         gameActivty.rotationSaver.setTimerMode(false);
                         gameActivty.stopCountdown();
@@ -144,7 +154,8 @@ public class OptionsPane extends Fragment {
                 view.setBackgroundColor(getResources().getColor(R.color.darkGreen));
                 gameActivty.rotationSaver.setBackgroundColor(getResources().getColor(R.color.darkGreen));
                 gameActivty.setBackground(getResources().getColor(R.color.darkGreen));
-                proceedBut.setText(R.string.CorrectAnswerFeedback);
+                //proceedBut.setText(R.string.CorrectAnswerFeedback);
+                descText.setText(R.string.CorrectAnswerFeedback);
                 gameActivty.rotationSaver.setProceedButText("CORRECT! Press to continue");
                 gameActivty.rotationSaver.setScore(gameActivty.rotationSaver.getScore()+1);
                 scoreText.setText(gameActivty.rotationSaver.getScoreText()+Integer.toString(gameActivty.rotationSaver.getScore()));
@@ -157,12 +168,15 @@ public class OptionsPane extends Fragment {
                     gameActivty.rotationSaver.setOptionColors(1,Color.RED);
                     gameActivty.scoreBoard();
                     proceedBut.setClickable(false);
+                    proceedBut.setVisibility(View.INVISIBLE);
 
                     if(MainActivity.mode!=3) {
-                        proceedBut.setText(R.string.wrongAnswerFeedback);
+                        //proceedBut.setText(R.string.wrongAnswerFeedback);
+                        descText.setText(R.string.wrongAnswerFeedback);
                         gameActivty.rotationSaver.setProceedButText("INCORRECT, KEEP TRYING!");
                     }else{
-                        proceedBut.setText("INCORRECT, Loading Scoreboard");
+                        //proceedBut.setText("INCORRECT, Loading Scoreboard");
+                        descText.setText("INCORRECT,Loading Scoreboard");
                         gameActivty.rotationSaver.setProceedButText("INCORRECT, Loading Scoreboard");
                     }
 
@@ -184,6 +198,7 @@ public class OptionsPane extends Fragment {
                 }
                 if(MainActivity.mode!=3 || gameActivty.rotationSaver.getBackgroundColor()==getResources().getColor(R.color.darkGreen))
                 proceedBut.setClickable(true);
+                proceedBut.setVisibility(View.VISIBLE);
                 gameActivty.rotationSaver.setOptionsClickable(false);
                 if(MainActivity.mode==3) {
                     gameActivty.rotationSaver.setTimerMode(false);
@@ -199,7 +214,8 @@ public class OptionsPane extends Fragment {
 
                 buttons.get(correctOption).setBackgroundColor(Color.GREEN);
                 gameActivty.rotationSaver.setOptionColors(correctOption,Color.GREEN);
-                proceedBut.setText(R.string.CorrectAnswerFeedback);
+               // proceedBut.setText(R.string.CorrectAnswerFeedback);
+                descText.setText(R.string.CorrectAnswerFeedback);
                 gameActivty.rotationSaver.setProceedButText("CORRECT! Press to continue");
                 gameActivty.rotationSaver.setScore(gameActivty.rotationSaver.getScore()+1);
                 scoreText.setText(gameActivty.rotationSaver.getScoreText()+Integer.toString(gameActivty.rotationSaver.getScore()));
@@ -212,15 +228,18 @@ public class OptionsPane extends Fragment {
                     gameActivty.rotationSaver.setOptionColors(2,Color.RED);
                     gameActivty.scoreBoard();
                     proceedBut.setClickable(false);
+                    proceedBut.setVisibility(View.INVISIBLE);
 
 
 
 
                     if(MainActivity.mode!=3) {
-                        proceedBut.setText(R.string.wrongAnswerFeedback);
+                       // proceedBut.setText(R.string.wrongAnswerFeedback);
+                        descText.setText(R.string.wrongAnswerFeedback);
                         gameActivty.rotationSaver.setProceedButText("INCORRECT, KEEP TRYING!");
                     }else{
-                        proceedBut.setText("INCORRECT, Loading Scoreboard");
+                       // proceedBut.setText("INCORRECT, Loading Scoreboard");
+                        descText.setText("INCORRECT, Loading Scoreboard");
                         gameActivty.rotationSaver.setProceedButText("INCORRECT, Loading Scoreboard");
                     }
                     view.setBackgroundColor(getResources().getColor(R.color.darkRed));
@@ -247,8 +266,10 @@ public class OptionsPane extends Fragment {
                 for(int i=0;i<3;i++){
                     buttons.get(i).setClickable(false);
                 }
-                if(MainActivity.mode!=3 || gameActivty.rotationSaver.getBackgroundColor()==getResources().getColor(R.color.darkGreen))
+                if(MainActivity.mode!=3 || gameActivty.rotationSaver.getBackgroundColor()==getResources().getColor(R.color.darkGreen)){
                 proceedBut.setClickable(true);
+                proceedBut.setVisibility(View.VISIBLE);
+                }
                 gameActivty.rotationSaver.setOptionsClickable(false);
             }
         });
@@ -265,6 +286,7 @@ public class OptionsPane extends Fragment {
                 buttons.get(i).setClickable(false);
             }
             proceedBut.setClickable(true);
+            proceedBut.setVisibility(View.VISIBLE);
         }
 
         return view;
@@ -341,8 +363,10 @@ public class OptionsPane extends Fragment {
         }
 
         proceedBut.setClickable(false);
+        proceedBut.setVisibility(View.INVISIBLE);
 
-       proceedBut.setText("TIME UP! Loading Scoreboard!");
+      // proceedBut.setText("TIME UP! Loading Scoreboard!");
+       descText.setText("TIME UP! Loading Scoreboard!");
        gameActivty.rotationSaver.setProceedButText("TIME UP! Loading Scoreboard");
        buttons.get(correctOption).setBackgroundColor(Color.GREEN);
        gameActivty.rotationSaver.setOptionColors(correctOption,Color.GREEN);
